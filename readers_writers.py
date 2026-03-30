@@ -88,8 +88,13 @@ class ReadersWritersMonitor:
         """
         with self.condition:
             # TODO: Replace 'pass' with your logic
-            pass
-
+            self.waiting_writers += 1
+            while self.active_readers > 0 or self.active_writers > 0:
+                self.condition.wait()
+            self.waiting_writers -= 1
+            self.active_writers += 1
+            print(f"Writer {writer_id} starts writing")
+            
     def end_write(self, writer_id: int) -> None:
         """
         Called after a writer finishes writing.
